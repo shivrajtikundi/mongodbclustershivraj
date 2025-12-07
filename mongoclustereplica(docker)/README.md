@@ -51,6 +51,7 @@ storage:
 net:
   bindIp: 0.0.0.0
   port: 27017
+  maxIncomingConnections: 64000
 
 replication:
   replSetName: "rs0"
@@ -60,6 +61,7 @@ security:
 
 processManagement:
   fork: false
+
 ```
 
 ### Secondary Node Configurations
@@ -100,6 +102,7 @@ These volumes ensure that your database files and logs persist even if the conta
 ```bash
 docker run -d \
   --name mongo-primary \
+  --ulimit nofile=64000:64000 \
   -p 27017:27017 \
   -v /home/ubuntu/mongo-setup/mongod-primary.conf:/etc/mongod.conf:ro \
   -v /home/ubuntu/mongo-setup/mongo-keyfile:/etc/mongo-keyfile:ro \
@@ -116,6 +119,7 @@ On Secondary 1 (10.15.136.84):
 ```bash
 docker run -d \
   --name mongo-secondary1 \
+  --ulimit nofile=64000:64000 \
   -p 27017:27017 \
   -v /home/ubuntu/mongo-setup/mongod-secondary1.conf:/etc/mongod.conf:ro \
   -v /home/ubuntu/mongo-setup/mongo-keyfile:/etc/mongo-keyfile:ro \
@@ -130,6 +134,7 @@ On Secondary 2 (10.15.137.94):
 ```bash
 docker run -d \
   --name mongo-tertiary \
+  --ulimit nofile=64000:64000 \
   -p 27017:27017 \
   -v /home/ubuntu/mongo-setup/mongod-secondary2.conf:/etc/mongod.conf:ro \
   -v /home/ubuntu/mongo-setup/mongo-keyfile:/etc/mongo-keyfile:ro \
@@ -191,6 +196,8 @@ Check your replica set status:
 ```javascript
 rs.status()
 ```
+docker exec -it mongo-primary bash -c "ulimit -n"   
+#check the new connection
 
 You should see all three nodes listed with the primary showing `"stateStr": "PRIMARY"` and the secondaries showing `"stateStr": "SECONDARY"`.
 
