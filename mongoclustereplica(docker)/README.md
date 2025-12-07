@@ -102,6 +102,7 @@ These volumes ensure that your database files and logs persist even if the conta
 ```bash
 docker run -d \
   --name mongo-primary \
+  --restart=always \
   --ulimit nofile=64000:64000 \
   -p 27017:27017 \
   -v /home/ubuntu/mongo-setup/mongod-primary.conf:/etc/mongod.conf:ro \
@@ -119,6 +120,7 @@ On Secondary 1 (10.15.136.84):
 ```bash
 docker run -d \
   --name mongo-secondary1 \
+  --restart=always \
   --ulimit nofile=64000:64000 \
   -p 27017:27017 \
   -v /home/ubuntu/mongo-setup/mongod-secondary1.conf:/etc/mongod.conf:ro \
@@ -134,6 +136,7 @@ On Secondary 2 (10.15.137.94):
 ```bash
 docker run -d \
   --name mongo-tertiary \
+  --restart=always \
   --ulimit nofile=64000:64000 \
   -p 27017:27017 \
   -v /home/ubuntu/mongo-setup/mongod-secondary2.conf:/etc/mongod.conf:ro \
