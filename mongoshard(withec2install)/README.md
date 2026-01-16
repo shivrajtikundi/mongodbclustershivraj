@@ -222,6 +222,11 @@ From now on, always connect with authentication:
 
 mongosh -u admin -p StrongPass123 --authenticationDatabase admin --port 27017
 
+#increase limits
+sudo mkdir -p /etc/systemd/system/mongod.service.d
+sudo nano /etc/systemd/system/mongod.service.d/override.conf
+
+
 
 #  shows limits
 cat /proc/$(pidof mongod)/limits
