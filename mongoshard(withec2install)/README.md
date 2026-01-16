@@ -1,3 +1,4 @@
+mongo 7 is only installable in ubuntu 20 and 22
 🧩 Setting Up a Secure MongoDB Sharded Cluster on Two EC2 Instances (with Authentication)
 
 In this guide, we’ll walk through how to set up a MongoDB sharded cluster using two Ubuntu EC2 instances — complete with config servers, shards, and a query router — all secured with authentication and keyFile-based internal security.
