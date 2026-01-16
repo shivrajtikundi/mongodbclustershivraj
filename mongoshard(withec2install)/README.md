@@ -221,3 +221,8 @@ mongos --config /etc/mongos.conf --fork
 From now on, always connect with authentication:
 
 mongosh -u admin -p StrongPass123 --authenticationDatabase admin --port 27017
+
+
+#  shows limits
+cat /proc/$(pidof mongod)/limits
+systemctl show mongod | grep -E "LimitNOFILE|LimitNPROC"
