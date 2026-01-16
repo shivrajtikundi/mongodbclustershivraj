@@ -222,9 +222,86 @@ From now on, always connect with authentication:
 
 mongosh -u admin -p StrongPass123 --authenticationDatabase admin --port 27017
 
-#increase limits
-sudo mkdir -p /etc/systemd/system/mongod.service.d
-sudo nano /etc/systemd/system/mongod.service.d/override.conf
+# increase limits
+3️⃣ Increase MongoDB Connections to ~64,000
+
+MongoDB uses file descriptors for connections.
+
+1. System limits
+
+Edit:
+
+sudo nano /etc/security/limits.conf
+
+
+Add:
+
+mongodb soft nofile 100000
+mongodb hard nofile 100000
+
+2. Kernel network tuning
+sudo nano /etc/sysctl.conf
+
+
+Add:
+
+net.core.somaxconn = 65535
+net.ipv4.ip_local_port_range = 1024 65535
+net.ipv4.tcp_fin_timeout = 15
+net.ipv4.tcp_tw_reuse = 1
+
+
+Apply:
+
+sudo sysctl -p
+
+3. MongoDB config tuning
+sudo nano /etc/mongod.conf
+
+
+Ensure:
+
+net:
+  port: 27017
+  bindIp: 0.0.0.0
+  maxIncomingConnections: 64000
+
+
+Restart MongoDB:
+
+sudo systemctl restart mongod
+
+
+Check limits:
+
+cat /proc/$(pidof mongod)/limits | grep "Max open files"
+
+4️⃣ Secure MongoDB (Recommended)
+Enable authentication
+mongosh
+
+use admin
+db.createUser({
+  user: "admin",
+  pwd: "StrongPassword@123",
+  roles: [{ role: "root", db: "admin" }]
+})
+
+
+Edit config:
+
+sudo nano /etc/mongod.conf
+
+
+Enable:
+
+security:
+  authorization: enabled
+
+
+Restart:
+
+sudo systemctl restart mongod
 
 
 
